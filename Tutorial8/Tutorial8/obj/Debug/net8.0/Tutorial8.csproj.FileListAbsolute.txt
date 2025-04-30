@@ -1,0 +1,7 @@
+/home/oleg/APBD/apbd12c-cw8/Tutorial8/Tutorial8/obj/Debug/net8.0/Tutorial8.csproj.AssemblyReference.cache
+/home/oleg/APBD/apbd12c-cw8/Tutorial8/Tutorial8/obj/Debug/net8.0/Tutorial8.GeneratedMSBuildEditorConfig.editorconfig
+/home/oleg/APBD/apbd12c-cw8/Tutorial8/Tutorial8/obj/Debug/net8.0/Tutorial8.AssemblyInfoInputs.cache
+/home/oleg/APBD/apbd12c-cw8/Tutorial8/Tutorial8/obj/Debug/net8.0/Tutorial8.AssemblyInfo.cs
+/home/oleg/APBD/apbd12c-cw8/Tutorial8/Tutorial8/obj/Debug/net8.0/Tutorial8.csproj.CoreCompileInputs.cache
+/home/oleg/APBD/apbd12c-cw8/Tutorial8/Tutorial8/obj/Debug/net8.0/Tutorial8.MvcApplicationPartsAssemblyInfo.cs
+/home/oleg/APBD/apbd12c-cw8/Tutorial8/Tutorial8/obj/Debug/net8.0/Tutorial8.MvcApplicationPartsAssemblyInfo.cache
