@@ -28,7 +28,7 @@ namespace Tutorial8.Controllers
              if( await _tripsService.DoesTripExist(id)){
               return NotFound();
              }
-            // var trip = ... GetTrip(id);
+            // var trip = GetTrip(id);
             return Ok();
         }
     }

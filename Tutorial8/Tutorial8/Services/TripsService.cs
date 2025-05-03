@@ -39,7 +39,7 @@ public class TripsService : ITripsService
 
     public async Task<Boolean> DoesTripExist(int id)
     {
-        string command = "SELECT count(*) FROM Trip where IdTrip = @id";
+        string command = "SELECT count(*) FROM Trip as t where exists (select * from Client_trip as c where IdClient = @id and c.IdTrip = t.IdTrip  )";
         
         using (SqlConnection conn = new SqlConnection(_connectionString))
         using (SqlCommand cmd = new SqlCommand(command, conn)){
@@ -57,5 +57,86 @@ public class TripsService : ITripsService
         
     return true;
     }
+
+
+    public async Task<Boolean> DoesClientExists(int id)
+    {
+        string command = "select count(*) from Client_trip as c where IdClient = @id";
+        
+        using (SqlConnection conn = new SqlConnection(_connectionString))
+        using (SqlCommand cmd = new SqlCommand(command, conn)){
+            cmd.Parameters.Add("@id",SqlDbType.Int).Value = id;
+            await conn.OpenAsync();
+
+            using (var reader = await cmd.ExecuteReaderAsync())
+            {
+                while (await reader.ReadAsync())
+                {
+                  return  reader.GetInt32(0) == 0;
+                }
+            }
+        }
+        
+    return true;
+    }
+
+    public async Task<String> AddClient(String FirstName,String LastName, String Email,String pesel)
+    {
+        string command = "INSERT INTO Client (FirstName, LastName, Email, Telephone, Pesel) VALUES (@fn,@ln,@em,@ps)";
+        
+        using (SqlConnection conn = new SqlConnection(_connectionString))
+        using (SqlCommand cmd = new SqlCommand(command, conn)){
+            cmd.Parameters.Add("@fn",SqlDbType.VarChar).Value = FirstName;
+
+            cmd.Parameters.Add("@ln",SqlDbType.VarChar).Value = LastName;
+
+            cmd.Parameters.Add("@em",SqlDbType.VarChar).Value = Email;
+
+            cmd.Parameters.Add("@ps",SqlDbType.VarChar).Value = pesel;
+            await conn.OpenAsync();
+
+            using (var reader = await cmd.ExecuteReaderAsync())
+            {
+                while (await reader.ReadAsync())
+                {
+                    
+                }
+            }
+        }
+        
+    return true;
+    }
+
+
+
+    public async Task<List<TripDTO>> GetTrip(int id)
+    {
+        var trips = new List<TripDTO>();
+
+        string command = "SELECT IdTrip, Name FROM Trip as t where exists (select * from Client_trip as c where IdClient = @id and c.IdTrip = t.IdTrip  )";
+        
+        using (SqlConnection conn = new SqlConnection(_connectionString))
+        using (SqlCommand cmd = new SqlCommand(command, conn))
+        {
+            cmd.Parameters.Add("@id",SqlDbType.Int).Value = id;
+            await conn.OpenAsync();
+
+            using (var reader = await cmd.ExecuteReaderAsync())
+            {
+                while (await reader.ReadAsync())
+                {
+                    trips.Add(new TripDTO()
+                    {
+                        Id = reader.GetInt32(0),
+                        Name = reader.GetString(1),
+                    });
+                }
+            }
+        }
+        
+
+        return trips;
+    }
+
     
 }

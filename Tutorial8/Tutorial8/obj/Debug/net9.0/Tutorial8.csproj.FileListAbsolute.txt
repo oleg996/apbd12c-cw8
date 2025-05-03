@@ -250,3 +250,4 @@
 /home/oleg/APBD/apbd12c-cw8/Tutorial8/Tutorial8/obj/Debug/net9.0/Tutorial8.pdb
 /home/oleg/APBD/apbd12c-cw8/Tutorial8/Tutorial8/obj/Debug/net9.0/Tutorial8.genruntimeconfig.cache
 /home/oleg/APBD/apbd12c-cw8/Tutorial8/Tutorial8/obj/Debug/net9.0/ref/Tutorial8.dll
+/home/oleg/APBD/apbd12c-cw8/Tutorial8/Tutorial8/obj/Debug/net9.0/Tutorial8.sourcelink.json

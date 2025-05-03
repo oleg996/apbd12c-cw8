@@ -7,4 +7,7 @@ public interface ITripsService
     Task<List<TripDTO>> GetTrips();
     
     Task<Boolean> DoesTripExist(int id);
+    Task<List<TripDTO>> GetTrip(int id);
+
+    Task<Boolean> DoesClientExists(int id);
 }
