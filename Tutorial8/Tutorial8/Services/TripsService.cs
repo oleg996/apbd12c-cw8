@@ -80,9 +80,11 @@ public class TripsService : ITripsService
     return true;
     }
 
-    public async Task<String> AddClient(String FirstName,String LastName, String Email,String pesel)
+    //todo move to clientService
+
+    public async Task<String> AddClient(String FirstName,String LastName, String Email,String phone,String pesel)
     {
-        string command = "INSERT INTO Client (FirstName, LastName, Email, Telephone, Pesel) VALUES (@fn,@ln,@em,@ps)";
+        string command = "INSERT INTO Client (FirstName, LastName, Email, Telephone, Pesel) VALUES (@fn,@ln,@em,@ph,@ps)";
         
         using (SqlConnection conn = new SqlConnection(_connectionString))
         using (SqlCommand cmd = new SqlCommand(command, conn)){
@@ -92,7 +94,9 @@ public class TripsService : ITripsService
 
             cmd.Parameters.Add("@em",SqlDbType.VarChar).Value = Email;
 
-            cmd.Parameters.Add("@ps",SqlDbType.VarChar).Value = pesel;
+            cmd.Parameters.Add("@ph",SqlDbType.VarChar).Value = phone;
+
+             cmd.Parameters.Add("@ps",SqlDbType.VarChar).Value = pesel;
             await conn.OpenAsync();
 
             using (var reader = await cmd.ExecuteReaderAsync())
@@ -104,8 +108,42 @@ public class TripsService : ITripsService
             }
         }
         
-    return true;
+    return "";
     }
+
+    public async Task<int> GetClientID(String FirstName,String LastName, String Email,String phone,String pesel)
+    {
+        string command = "select IdClient from Client c where FirstName  = @fn and LastName  = @ln and Email = @em and Telephone = @ph and Pesel = @ps";
+        
+        using (SqlConnection conn = new SqlConnection(_connectionString))
+        using (SqlCommand cmd = new SqlCommand(command, conn)){
+            cmd.Parameters.Add("@fn",SqlDbType.VarChar).Value = FirstName;
+
+            cmd.Parameters.Add("@ln",SqlDbType.VarChar).Value = LastName;
+
+            cmd.Parameters.Add("@em",SqlDbType.VarChar).Value = Email;
+
+            cmd.Parameters.Add("@ph",SqlDbType.VarChar).Value = phone;
+
+             cmd.Parameters.Add("@ps",SqlDbType.VarChar).Value = pesel;
+            await conn.OpenAsync();
+
+            using (var reader = await cmd.ExecuteReaderAsync())
+            {
+                while (await reader.ReadAsync())
+                {
+                    return  reader.GetInt32(0);
+                }
+            }
+        }
+        
+    return -1;
+    }
+
+
+
+
+
 
 
 
@@ -136,6 +174,71 @@ public class TripsService : ITripsService
         
 
         return trips;
+    }
+
+
+     public async Task<Boolean> DoesTripExistByTripId(int id)
+    {
+        string command = "SELECT count(*) FROM Trip as t where t.IdTrip = @id";
+        
+        using (SqlConnection conn = new SqlConnection(_connectionString))
+        using (SqlCommand cmd = new SqlCommand(command, conn)){
+            cmd.Parameters.Add("@id",SqlDbType.Int).Value = id;
+            await conn.OpenAsync();
+
+            using (var reader = await cmd.ExecuteReaderAsync())
+            {
+                while (await reader.ReadAsync())
+                {
+                  return  reader.GetInt32(0) == 0;
+                }
+            }
+        }
+        
+    return true;
+    }
+
+    public async Task<Boolean> DoesTripFullByTripId(int id)
+    {
+        string command = "SELECT count(*) FROM Trip as t where t.MaxPeople > (select count(*) from Client_Trip ct  where t.IdTrip = ct.IdTrip) and t.IdTrip = @id";
+        
+        using (SqlConnection conn = new SqlConnection(_connectionString))
+        using (SqlCommand cmd = new SqlCommand(command, conn)){
+            cmd.Parameters.Add("@id",SqlDbType.Int).Value = id;
+            await conn.OpenAsync();
+
+            using (var reader = await cmd.ExecuteReaderAsync())
+            {
+                while (await reader.ReadAsync())
+                {
+                  return  reader.GetInt32(0) == 0;
+                }
+            }
+        }
+        
+    return true;
+    }
+
+    public async Task AddTrip(int id,int tripid)
+    {
+        string command = "INSERT INTO Client_Trip (IdClient, IdTrip, RegisteredAt, PaymentDate) VALUES (@id,@tid,@dt,null)";
+        
+        using (SqlConnection conn = new SqlConnection(_connectionString))
+        using (SqlCommand cmd = new SqlCommand(command, conn)){
+           
+            cmd.Parameters.Add("@id",SqlDbType.Int).Value = id;
+            cmd.Parameters.Add("@tid",SqlDbType.Int).Value = tripid;
+            cmd.Parameters.Add("@dt",SqlDbType.Int).Value = DateTime.Now.Year *10000+DateTime.Now.Month*100+DateTime.Now.Day;
+
+            await conn.OpenAsync();
+
+            using (var reader = await cmd.ExecuteReaderAsync())
+            {
+                await reader.ReadAsync();
+
+            }
+        }
+        
     }
 
     
