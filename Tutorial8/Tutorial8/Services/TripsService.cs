@@ -198,6 +198,30 @@ public class TripsService : ITripsService
     return true;
     }
 
+
+    public async Task<Boolean> DoesTripExistByTripIdAndClientId(int id,int tripid)
+    {
+        string command = "SELECT count(*) FROM Client_Trip as t where t.IdTrip = @id and t.IdClient = @cid";
+        
+        using (SqlConnection conn = new SqlConnection(_connectionString))
+        using (SqlCommand cmd = new SqlCommand(command, conn)){
+            cmd.Parameters.Add("@id",SqlDbType.Int).Value = id;
+
+            cmd.Parameters.Add("@cid",SqlDbType.Int).Value = id;
+            await conn.OpenAsync();
+
+            using (var reader = await cmd.ExecuteReaderAsync())
+            {
+                while (await reader.ReadAsync())
+                {
+                  return  reader.GetInt32(0) == 0;
+                }
+            }
+        }
+        
+    return true;
+    }
+
     public async Task<Boolean> DoesTripFullByTripId(int id)
     {
         string command = "SELECT count(*) FROM Trip as t where t.MaxPeople > (select count(*) from Client_Trip ct  where t.IdTrip = ct.IdTrip) and t.IdTrip = @id";
@@ -239,6 +263,29 @@ public class TripsService : ITripsService
             }
         }
         
+    }
+
+    public async Task<Boolean> DeletetByTripIdAndClientId(int id,int tripid)
+    {
+        string command = "Delete FROM Client_Trip where IdTrip = @id and IdClient = @cid";
+        
+        using (SqlConnection conn = new SqlConnection(_connectionString))
+        using (SqlCommand cmd = new SqlCommand(command, conn)){
+            cmd.Parameters.Add("@id",SqlDbType.Int).Value = id;
+
+            cmd.Parameters.Add("@cid",SqlDbType.Int).Value = id;
+            await conn.OpenAsync();
+
+            using (var reader = await cmd.ExecuteReaderAsync())
+            {
+                while (await reader.ReadAsync())
+                {
+                  return  reader.GetInt32(0) == 0;
+                }
+            }
+        }
+        
+    return true;
     }
 
     

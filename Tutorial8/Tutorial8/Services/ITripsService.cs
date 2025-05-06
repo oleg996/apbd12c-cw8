@@ -20,4 +20,8 @@ public interface ITripsService
 
 
     Task AddTrip(int id,int tripid);
+
+    Task<Boolean> DoesTripExistByTripIdAndClientId(int id,int tripid);
+
+    Task<Boolean> DeletetByTripIdAndClientId(int id,int tripid);
 }

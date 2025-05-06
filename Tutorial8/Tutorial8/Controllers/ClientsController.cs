@@ -1,3 +1,4 @@
+using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -77,8 +78,23 @@ namespace Tutorial8.Controllers
 
             await _tripsService.AddTrip(id,tripid);
 
-            return Ok(id +" "+tripid);
+            return Ok();
         }
+        [HttpDelete("{id}/trips/{tripid}")]
+        public async Task<IActionResult> RemoveTrip(int id,int tripid){
+
+
+            if ( await _tripsService.DoesTripExistByTripIdAndClientId(tripid,id))
+                return NotFound("No such trip");
+
+
+
+
+            await _tripsService.DeletetByTripIdAndClientId(tripid,id);
+            return Ok();
+        }
+
+    
 
     }
 }
