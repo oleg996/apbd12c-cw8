@@ -3,6 +3,7 @@ using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis.Scripting.Hosting;
+using Tutorial8.Models.DTOs;
 using Tutorial8.Services;
 
 namespace Tutorial8.Controllers
@@ -43,22 +44,19 @@ namespace Tutorial8.Controllers
 
 
         [HttpPost]
-         public async Task<IActionResult> Add_client(String FirstName,String LastName, String Email,String phone,String pesel){
-            if (!new Regex(@"\A(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?)\Z").IsMatch(Email))
-                return BadRequest("incorect email");
-            if (!new Regex(@"^\d{11}$").IsMatch(pesel))
-                return BadRequest("incorect pessel");
+         public async Task<IActionResult> Add_client(ClientCreateDTO clientCreateDTO){
 
-            if(await _tripsService.GetClientID(FirstName,LastName,Email,phone,pesel) != -1)
+            Console.WriteLine(clientCreateDTO.FirstName);
+
+            if(await _tripsService.GetClientID(clientCreateDTO) != -1)
                 return NotFound("such client exists");
 
 
 
-            await _tripsService.AddClient(FirstName,LastName,Email,phone,pesel);
+            await _tripsService.AddClient(clientCreateDTO);
 
 
-            int id  = await _tripsService.GetClientID(FirstName,LastName,Email,phone,pesel);
-
+            int id  = await _tripsService.GetClientID(clientCreateDTO);
             return Ok(id);
          }
 

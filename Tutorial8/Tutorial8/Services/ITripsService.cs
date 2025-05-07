@@ -11,9 +11,9 @@ public interface ITripsService
 
     Task<Boolean> DoesClientExists(int id);
 
-    Task<String> AddClient(String FirstName,String LastName, String Email,String phone,String pesel);
+    Task<String> AddClient(ClientCreateDTO clientCreateDTO);
 
-    Task<int> GetClientID(String FirstName,String LastName, String Email,String phone,String pesel);
+    Task<int> GetClientID(ClientCreateDTO clientCreateDTO);
     Task<Boolean> DoesTripExistByTripId(int id);
 
     Task<Boolean> DoesTripFullByTripId(int id);

@@ -111,21 +111,21 @@ public class TripsService : ITripsService
 
     //todo move to clientService??
 
-    public async Task<String> AddClient(String FirstName,String LastName, String Email,String phone,String pesel)
+    public async Task<String> AddClient(ClientCreateDTO clientCreateDTO)
     {
         string command = "INSERT INTO Client (FirstName, LastName, Email, Telephone, Pesel) VALUES (@fn,@ln,@em,@ph,@ps)";
         
         using (SqlConnection conn = new SqlConnection(_connectionString))
         using (SqlCommand cmd = new SqlCommand(command, conn)){
-            cmd.Parameters.Add("@fn",SqlDbType.VarChar).Value = FirstName;
+            cmd.Parameters.Add("@fn",SqlDbType.VarChar).Value = clientCreateDTO.FirstName;
 
-            cmd.Parameters.Add("@ln",SqlDbType.VarChar).Value = LastName;
+            cmd.Parameters.Add("@ln",SqlDbType.VarChar).Value = clientCreateDTO.LastName;
 
-            cmd.Parameters.Add("@em",SqlDbType.VarChar).Value = Email;
+            cmd.Parameters.Add("@em",SqlDbType.VarChar).Value = clientCreateDTO.Email;
 
-            cmd.Parameters.Add("@ph",SqlDbType.VarChar).Value = phone;
+            cmd.Parameters.Add("@ph",SqlDbType.VarChar).Value = clientCreateDTO.phone;
 
-             cmd.Parameters.Add("@ps",SqlDbType.VarChar).Value = pesel;
+             cmd.Parameters.Add("@ps",SqlDbType.VarChar).Value = clientCreateDTO.pesel;
             await conn.OpenAsync();
 
             using (var reader = await cmd.ExecuteReaderAsync())
@@ -140,21 +140,21 @@ public class TripsService : ITripsService
     return "";
     }
 
-    public async Task<int> GetClientID(String FirstName,String LastName, String Email,String phone,String pesel)
+    public async Task<int> GetClientID(ClientCreateDTO clientCreateDTO)
     {
         string command = "select IdClient from Client c where FirstName  = @fn and LastName  = @ln and Email = @em and Telephone = @ph and Pesel = @ps";
         
         using (SqlConnection conn = new SqlConnection(_connectionString))
         using (SqlCommand cmd = new SqlCommand(command, conn)){
-            cmd.Parameters.Add("@fn",SqlDbType.VarChar).Value = FirstName;
+            cmd.Parameters.AddWithValue("@fn",clientCreateDTO.FirstName);
 
-            cmd.Parameters.Add("@ln",SqlDbType.VarChar).Value = LastName;
+            cmd.Parameters.AddWithValue("@ln",clientCreateDTO.LastName);
 
-            cmd.Parameters.Add("@em",SqlDbType.VarChar).Value = Email;
+            cmd.Parameters.AddWithValue("@em",clientCreateDTO.Email);
 
-            cmd.Parameters.Add("@ph",SqlDbType.VarChar).Value = phone;
+            cmd.Parameters.AddWithValue("@ph",clientCreateDTO.phone);
 
-             cmd.Parameters.Add("@ps",SqlDbType.VarChar).Value = pesel;
+             cmd.Parameters.AddWithValue("@ps",clientCreateDTO.pesel);
             await conn.OpenAsync();
 
             using (var reader = await cmd.ExecuteReaderAsync())
