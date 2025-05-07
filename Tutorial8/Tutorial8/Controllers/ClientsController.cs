@@ -45,9 +45,9 @@ namespace Tutorial8.Controllers
         [HttpPost]
          public async Task<IActionResult> Add_client(String FirstName,String LastName, String Email,String phone,String pesel){
             if (!new Regex(@"\A(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?)\Z").IsMatch(Email))
-                return NotFound("incorect email");
+                return BadRequest("incorect email");
             if (!new Regex(@"^\d{11}$").IsMatch(pesel))
-                return NotFound("incorect pessel");
+                return BadRequest("incorect pessel");
 
             if(await _tripsService.GetClientID(FirstName,LastName,Email,phone,pesel) != -1)
                 return NotFound("such client exists");
@@ -78,7 +78,7 @@ namespace Tutorial8.Controllers
 
             await _tripsService.AddTrip(id,tripid);
 
-            return Ok();
+            return Created();
         }
         [HttpDelete("{id}/trips/{tripid}")]
         public async Task<IActionResult> RemoveTrip(int id,int tripid){

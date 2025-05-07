@@ -12,7 +12,7 @@ public class TripsService : ITripsService
     {
         var trips = new List<TripDTO>();
 
-        string command = "SELECT IdTrip, Name FROM Trip";
+        string command = "SELECT IdTrip, Name,Description FROM Trip";
         
         using (SqlConnection conn = new SqlConnection(_connectionString))
         using (SqlCommand cmd = new SqlCommand(command, conn))
@@ -28,6 +28,9 @@ public class TripsService : ITripsService
                     {
                         Id = reader.GetInt32(idOrdinal),
                         Name = reader.GetString(1),
+                        Descr = reader.GetString(2),
+                        Countries =  await GetCountries(reader.GetInt32(idOrdinal))
+
                     });
                 }
             }
@@ -36,6 +39,32 @@ public class TripsService : ITripsService
 
         return trips;
     }
+
+    public async Task<List<CountryDTO>> GetCountries(int id){
+        
+        var countries = new List<CountryDTO>();
+
+        string command = "select Name from Country c , Country_Trip ct  WHERE  c.IdCountry  = ct.IdCountry and IdTrip  = @id";
+        
+        using (SqlConnection conn = new SqlConnection(_connectionString))
+        using (SqlCommand cmd = new SqlCommand(command, conn))
+        {
+            cmd.Parameters.Add("@id",SqlDbType.Int).Value = id;
+            await conn.OpenAsync();
+
+            using (var reader = await cmd.ExecuteReaderAsync())
+            {
+                while (await reader.ReadAsync())
+                {
+                    countries.Add(new CountryDTO(){Name = reader.GetString(0)});
+                }
+            }
+        }
+        return countries;
+
+    }
+
+
 
     public async Task<Boolean> DoesTripExist(int id)
     {
@@ -80,7 +109,7 @@ public class TripsService : ITripsService
     return true;
     }
 
-    //todo move to clientService
+    //todo move to clientService??
 
     public async Task<String> AddClient(String FirstName,String LastName, String Email,String phone,String pesel)
     {
@@ -151,7 +180,7 @@ public class TripsService : ITripsService
     {
         var trips = new List<TripDTO>();
 
-        string command = "SELECT IdTrip, Name FROM Trip as t where exists (select * from Client_trip as c where IdClient = @id and c.IdTrip = t.IdTrip  )";
+        string command = "SELECT IdTrip, Name ,Description FROM Trip as t where exists (select * from Client_trip as c where IdClient = @id and c.IdTrip = t.IdTrip  )";
         
         using (SqlConnection conn = new SqlConnection(_connectionString))
         using (SqlCommand cmd = new SqlCommand(command, conn))
@@ -167,6 +196,9 @@ public class TripsService : ITripsService
                     {
                         Id = reader.GetInt32(0),
                         Name = reader.GetString(1),
+                        Descr = reader.GetString(2),
+                        Countries =  await GetCountries(reader.GetInt32(0))
+
                     });
                 }
             }
